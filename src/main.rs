@@ -1,19 +1,10 @@
 extern crate plsqlfmt;
 
-fn try_lexer(input: &str) {
-    println!("'{}' -> {:?}", input, plsqlfmt::lexer::read_str(input));
+use std::io::{self, Read};
 
-}
+pub fn main() {
+    let mut buffer = String::new();
+    io::stdin().read_to_string(&mut buffer).unwrap();
 
-fn main() {
-    println!("Lexing:");
-    
-    try_lexer("SELECT 1 FROM dual;");
-    try_lexer(r#"SELECT
-1
- FROM dual;"#);
-    try_lexer("SELECT 1 x FROM dual;");
-    try_lexer("SELECT 1 AS x FROM dual;");
-    try_lexer("SELECT 'Hi' FROM dual;");
-    try_lexer("INSERT INTO foo (baz, bar) VALUES (1, 'Hi');");
+    println!("{:?}", plsqlfmt::lexer::read_str(&buffer));
 }
