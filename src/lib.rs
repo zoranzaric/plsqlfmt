@@ -1,4 +1,8 @@
+extern crate failure;
+
 pub mod lexer {
+    use failure;
+
     enum State {
         None,
         StringLiteral,
@@ -6,7 +10,7 @@ pub mod lexer {
         Number,
     }
 
-    pub fn read_str(input: &str) -> Vec<String> {
+    pub fn read_str(input: &str) -> Result<Vec<String>, failure::Error> {
         let mut state = State::None;
         let mut buffer = String::new();
         let mut result: Vec<String> = vec![];
@@ -84,12 +88,30 @@ pub mod lexer {
                     c @ _ => {
                         buffer.push(c);
                     }
-                },
-                _ => {
-                    unimplemented!();
                 }
             }
         }
-        result
+        Ok(result)
+    }
+
+    #[cfg(test)]
+    mod tests {
+        use super::read_str;
+
+        #[test]
+        fn lexing_simple_stuff_works() {
+            assert_eq!(
+                vec!["SELECT", "1", "FROM", "dual", ";"],
+                read_str("SELECT 1 FROM dual;").unwrap()
+            );
+            assert_eq!(
+                vec!["SELECT", "1", "FROM", "dual", ";"],
+                read_str(
+                    r#"SELECT
+1
+FROM dual;"#,
+                ).unwrap()
+            );
+        }
     }
 }

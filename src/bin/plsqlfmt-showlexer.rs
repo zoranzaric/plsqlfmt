@@ -1,17 +1,22 @@
 extern crate plsqlfmt;
 
 fn try_lexer(input: &str) {
-    println!("'{}' -> {:?}", input, plsqlfmt::lexer::read_str(input));
-
+    println!(
+        "'{}' -> {:?}",
+        input,
+        plsqlfmt::lexer::read_str(input).unwrap()
+    );
 }
 
 fn main() {
     println!("Lexing:");
-    
+
     try_lexer("SELECT 1 FROM dual;");
-    try_lexer(r#"SELECT
+    try_lexer(
+        r#"SELECT
 1
- FROM dual;"#);
+ FROM dual;"#,
+    );
     try_lexer("SELECT 1 x FROM dual;");
     try_lexer("SELECT 1 AS x FROM dual;");
     try_lexer("SELECT 'Hi' FROM dual;");
