@@ -88,7 +88,7 @@ pub mod lexer {
                     c @ _ => {
                         buffer.push(c);
                     }
-                }
+                },
             }
         }
         Ok(result)
@@ -111,6 +111,26 @@ pub mod lexer {
 1
 FROM dual;"#,
                 ).unwrap()
+            );
+
+            assert_eq!(
+                vec!["SELECT", "1", "x", "FROM", "dual", ";"],
+                read_str("SELECT 1 x FROM dual;").unwrap()
+            );
+            assert_eq!(
+                vec!["SELECT", "1", "AS", "x", "FROM", "dual", ";"],
+                read_str("SELECT 1 AS x FROM dual;").unwrap()
+            );
+            assert_eq!(
+                vec!["SELECT", "'Hi'", "FROM", "dual", ";"],
+                read_str("SELECT 'Hi' FROM dual;").unwrap()
+            );
+            assert_eq!(
+                vec![
+                    "INSERT", "INTO", "foo", "(", "baz", ",", "bar", ")", "VALUES", "(", "1", ",",
+                    "'Hi'", ")", ";",
+                ],
+                read_str("INSERT INTO foo (baz, bar) VALUES (1, 'Hi');").unwrap()
             );
         }
     }
